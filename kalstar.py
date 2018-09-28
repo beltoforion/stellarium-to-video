@@ -274,7 +274,7 @@ class StellariumToMpeg:
                                  '-f', 'image2',
                                  '-s', '1920x1080',
                                  '-i', '{0}/frame_%03d.png'.format(self.__frame_folder),
-                                 '-crf', '25',   #war 25
+                                 '-crf', '12',   # niedriger ist besser
                                  '-pix_fmt', 'yuv420p',
                                  self.__args.outfile], stdout=subprocess.PIPE);
         proc.communicate();
