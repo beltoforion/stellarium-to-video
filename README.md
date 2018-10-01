@@ -23,7 +23,7 @@ _-az 	xx.xxx_
 Azimut in degrees (View direction)
 
 _-d YYYY-MM-DD_	
-The simulation date. The animation automatically starts an hour after sunset on the specified day.
+The simulation date. The animation will automatically begin an hour after sunset on the specified day.
 
 _-fov xx.xxx_ 	
 The field of view in degrees.
