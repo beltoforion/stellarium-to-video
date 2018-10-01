@@ -4,16 +4,21 @@
  For Details please go to the web page of this project:
  http://beltoforion.de/article.php?a=stellarium_video&hl=en
  
-This script will automate the process of creating videos of the night sky with stellarium.
+This archive contains a python 3 script that will automate the process of creating videos of the night sky with stellarium. It will take an observation position as well as multiple obvervation parameters as command line options and then create a script for Stellariums scripting engine to compute animation frames for the given date. Once the frames are created the script will invoke ffmpeg to combine the frames into an mp4 video file.
 
 # Command Line Options:
 
--long 	float 	Longitude of the observation loaction
--lat 	float 	Latitude of the observation loaction
--alt 	float 	Altitude of the center of the field of view
+_-long 	float_ 	
+Longitude of the observation loaction
+
+_-lat 	float_ 	
+Latitude of the observation loaction
+
+-alt 	float 	
+Altitude of the center of the field of view
+
 -az 	float 	Azimut in degrees (View direction)
--d 	date
-(ISO 8601) 	The simulation date. The animation automatically starts an hour after sunset on the specified day.
+-d 	date (ISO 8601) 	The simulation date. The animation automatically starts an hour after sunset on the specified day.
 -fov 	float 	The field of viewin degrees.
 -fps 	int 	Frame rate of the output video.
 -t 	string 	The title of the video. The video title will be superimposed onto the video.
