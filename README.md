@@ -7,29 +7,41 @@ For more details please go to the web page of this project: http://beltoforion.d
  
 # Command Line Options:
 
-_-long 	float_ Longitude of the observation loaction
+_-long xx.xxx_ 
+Longitude of the observation loaction.
 
-_-lat 	float_ Latitude of the observation loaction
+_-lat xx.xxx_ 
+Latitude of the observation loaction
 
-_-alt 	float_ Altitude of the center of the field of view
+_-alt xx.xxx_ 
+Altitude of the center of the field of view
 
-_-az 	float_ 	Azimut in degrees (View direction)
+_-az 	xx.xxx_ 	
+Azimut in degrees (View direction)
 
-_-d_ 	date (ISO 8601) 	The simulation date. The animation automatically starts an hour after sunset on the specified day.
+_-d YYYY-MM-DD_	
+The simulation date. The animation automatically starts an hour after sunset on the specified day.
 
-_-fov_ 	float 	The field of viewin degrees.
+_-fov xx.xxx_ 	
+The field of view in degrees.
 
-_-fps_ 	int 	Frame rate of the output video.
+_-fps xx_ 	
+Frame rate of the output video.
 
-_-t_ 	string 	The title of the video. The video title will be superimposed onto the video.
+_-t abc_ 	
+The title of the video. The video title will be superimposed onto the video.
 
-_-ts_ 	float 	The simulation time span in hours.
+_-ts xx_ 	
+The simulation time span in hours.
 
-_-dt_ 	float 	The time difference between two sucessive frames in seconds.
+_-dt xx_ 	
+The time difference between two sucessive frames in seconds.
 
-_-o_ 	string 	The name of the output video file.
+_-o abc.mp4_ 
+The name of the output video file.
 
-_-s_ 	- 	When this flag is specified an instance of VLC will be started once the video is created.
+_-s_ 	
+When this flag is specified an instance of VLC will be started once the video is created.
 
 # Example:
 
