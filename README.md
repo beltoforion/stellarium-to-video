@@ -1,12 +1,12 @@
 # kalstar
- Making videos of the night sky with Stellarium
+ Making videos of the night sky with [Stellarium](https://stellarium.org)
  
  For Details please go to the web page of this project:
  http://beltoforion.de/article.php?a=stellarium_video&hl=en
  
 This script will automate the process of creating videos of the night sky with stellarium.
 
-Command Line Options:
+# Command Line Options:
 
 -long 	float 	Longitude of the observation loaction
 -lat 	float 	Latitude of the observation loaction
@@ -22,7 +22,7 @@ Command Line Options:
 -o 	string 	The name of the output video file.
 -s 	- 	When this flag is specified an instance of VLC will be started once the video is created.
 
-Example:
+# Example:
 
 The following command will compute the first 2 hours of night sky in Berlin (Germany) on the 25th September of the year 2018. 
 
