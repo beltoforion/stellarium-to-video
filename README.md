@@ -6,7 +6,7 @@ This archive contains a python 3 script that will automate the process of creati
 For more details please go to the [web page of this project](http://beltoforion.de/article.php?a=stellarium_video&hl=en)
 
 # Prerequisites:
-In order to use this script [Stellarium](https://stellarium.org) and [ffmpeg](https://www.ffmpeg.org/) must be installed. YOu will also need [vlc](https://www.videolan.org/vlc/) if you want to use the -s option.
+In order to use this script [Stellarium](https://stellarium.org) and [ffmpeg](https://www.ffmpeg.org/) must be installed. You will also need [vlc](https://www.videolan.org/vlc/) if you want to use the -s option.
 
 # Command Line Options:
 
