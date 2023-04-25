@@ -179,8 +179,9 @@ class StellariumToMpeg:
 
     core.setTimeRate(0); 
     core.setGuiVisible(false);
-    core.setMilkyWayVisible(true);
-    core.setMilkyWayIntensity(4);
+
+    MilkyWay.setFlagShow(true);
+    MilkyWay.setIntensity(4);
 
     SolarSystem.setFlagPlanets(true);
     SolarSystem.setMoonScale(6);

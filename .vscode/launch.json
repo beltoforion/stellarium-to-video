@@ -1,0 +1,14 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": ["-lat", "52.5186", "-long", "13.4083", "-t", "Look at all the Stars!", "-az", "90", "-alt", "25", "-d", "2023-04-25", "-ts", "2", "-s", "-o", "output.mp4", "-fov", "70", "-dt", "30"]
+        }
+    ]
+}
