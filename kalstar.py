@@ -310,7 +310,7 @@ def main():
     parser.add_argument("-fov", "--FieldOfView", dest="fov", help='The field of view', default='70', type=float)
     parser.add_argument("-t", "--Title", dest="title", help='Caption of the video', required=True)
     parser.add_argument("-ts", "--TimeSpan",dest="timespan", help='Number of hoursto simulate', default='2', type=positive_number)
-    parser.add_argument("-dt", "--DeltaT", dest="dt", help='Simulated time between two Frames', default='10')
+    parser.add_argument("-dt", "--DeltaT", dest="dt", help='Simulated time between two Frames', type=positive_number, default='10')
     parser.add_argument("-o", "--Outfile", dest="outfile", help='Output filename', default='out.mp4')
     parser.add_argument("-s", "--Show", dest="show_video", default=False, action='store_true', help='If this flag is set the video is shown after rendering (VLC must be installed)')
     args = parser.parse_args()
