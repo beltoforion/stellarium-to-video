@@ -222,7 +222,7 @@ class StellariumToMpeg:
         if os.path.exists(self.__frame_folder):
             shutil.rmtree(self.__frame_folder)
 
-        os.mkdir(self.__frame_folder);
+        os.mkdir(self.__frame_folder)
 
     def __addSecs(self, tm, secs):
         fulldate = datetime(100, 1, 1, tm.hour, tm.minute, tm.second)
@@ -315,28 +315,30 @@ def main():
     parser.add_argument("-s", "--Show", dest="show_video", default=False, action='store_true', help='If this flag is set the video is shown after rendering (VLC must be installed)')
     args = parser.parse_args()
 
-    print("kalstar - A star motion video generator:")
-    print("-------------------------------------------")
-    print("Python Version: {0}".format(sys.version_info))
-    print("Datum: {0}".format(args.date.strftime("%Y-%m-%d")))
-    print("Titel: \"{0}\"".format(args.title))
-    print("Simulationszeitraum: {0}".format(args.timespan))
-    print("Höhe: {0}".format(args.alt))
-    print("Blickrichtung: {0}".format(args.az))
-    print("Position: long={0}; lat={1}".format(args.long, args.lat))
+    print('kalstar - A star motion video generator:')
+    print('-------------------------------------------')
+    print(f'Python Version: {sys.version_info}')
+    print(f'Date: {args.date.strftime("%Y-%m-%d")}')
+    print(f'Title: "{args.title}"')
+    print(f'Simulation time span: {args.timespan}')
+    print(f'Height: {args.alt}')
+    print(f'View Direction: {args.az}')
+    print(f'Position: long={args.long}; lat={args.lat}')
+
+    path_home = Path.home()
 
     # Check if there is a local stellarium folder
-    if not os.path.isdir("{0}/.stellarium".format(Path.home())):
-        print("Stellarium does not seem to be installed!")
+    if not os.path.isdir(f'{path_home}/.stellarium'):
+        print('Stellarium does not seem to be installed!')
 
     # if there is no local scripts folder, create one
-    if not os.path.isdir("{0}/.stellarium/scripts".format(Path.home())):
-        os.mkdir("{0}/.stellarium/scripts".format(Path.home()));
+    if not os.path.isdir(f'{path_home}/.stellarium/scripts'):
+        os.mkdir('{path_home}/.stellarium/scripts')
 
     sa = StellariumToMpeg(args)
-    sa.create_script();
-    sa.create_frames();
-    sa.create_video();
+    sa.create_script()
+    sa.create_frames()
+    sa.create_video()
 
 if __name__ == "__main__":
     main()
