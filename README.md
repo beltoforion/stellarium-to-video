@@ -1,5 +1,5 @@
 # kalstar
- Making videos of the night sky with [Stellarium](https://stellarium.org) (0.20.4 or higher)
+Automatically creating videos of the night sky with [Stellarium](https://stellarium.org) (0.20.4 or higher) and Linux/BSD.
  
 This archive contains a python 3 script that will automate the process of creating videos of the night sky with stellarium. It will take an observation position and other observation parameters as command line options and then create a [script](http://beltoforion.de/article.php?a=stellarium_video&hl=en#idStellariumScript) for Stellariums built in scripting engine to compute the animation frames for the given date. Once the frames are created the script will invoke ffmpeg to combine the frames into an mp4 video file.
 
@@ -51,9 +51,9 @@ When this flag is specified an instance of VLC will be started once the video is
 
 # Example:
 
-The following command will compute the first 2 hours of night sky in Berlin (Germany) on the 25th September of the year 2018. 
+The following command will compute the first 2 hours of night sky in Berlin (Germany) on the 25th September of the year 2023. 
 
-**python3 kalstar.py** -lat 52.5186 -long 13.4083 -t "Look at all the Stars!" -az 90 -alt 25 -d 2018-09-25 -ts 2 -s -o out.mp4 -fov 70 -dt 30
+**python3 kalstar.py** -lat 52.5186 -long 13.4083 -t "Look at all the Stars!" -az 90 -alt 25 -d 2023-09-25 -ts 2 -s -o out.mp4 -fov 70 -dt 30
 
 # Acknowledgements:
 The computation of sunset times in this script is done with [routines written by Michel J. Anders](https://michelanders.blogspot.com/2010/12/calulating-sunrise-and-sunset-in-python.html).
