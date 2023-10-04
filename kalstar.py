@@ -345,7 +345,7 @@ def main():
 
     # if there is no local scripts folder, create one
     if not os.path.isdir(f'{path_home}/.stellarium/scripts'):
-        os.mkdir('{path_home}/.stellarium/scripts')
+        os.mkdir(f'{path_home}/.stellarium/scripts')
 
     sa = StellariumToMpeg(args)
     sa.create_script()
