@@ -8,7 +8,8 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "args": ["-lat", "34", "-long", "-140", "-t", "Look at all the Stars!", "-az", "90", "-alt", "25", "-d", "2023-04-25", "-ts", "2", "-s", "-o", "output.mp4", "-fov", "70", "-dt", "30"]
+//            "args": ["-lat", "34", "-long", "-140", "-t", "Look at all the Stars!", "-az", "90", "-alt", "25", "-d", "2023-04-25", "-ts", "2", "-s", "-o", "output.mp4", "-fov", "70", "-dt", "30"]
+            "args": ["-lat", "35.6762", "-long", "139.6503", "-t", "Look at all the Stars!", "-az", "90", "-alt", "25", "-d", "2023-04-25", "-ts", "2", "-s", "-o", "output.mp4", "-fov", "70", "-dt", "30"]
         }
     ]
 }

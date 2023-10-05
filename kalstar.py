@@ -128,9 +128,9 @@ class sun:
     
         # fix for #3, thanks to jmadajian (https://github.com/beltoforion/kalstar/issues/3)
         if self.sunrise_t > 1:
-            sunrise_t -= 1
+            self.sunrise_t -= 1
         elif self.sunrise_t < 0:
-            sunrise_t += 1
+            self.sunrise_t += 1
     
         self.sunset_t = self.solarnoon_t + hourangle * 4 / 1440
 
@@ -138,7 +138,7 @@ class sun:
         if self.sunset_t > 1:
             self.sunset_t -= 1
         elif self.sunset_t < 0:
-            sunset_t += 1
+            self.sunset_t += 1
 
 class StellariumToMpeg:
     __args = None
