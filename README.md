@@ -1,7 +1,7 @@
-# kalstar
+# Stellarium-To-Video
 Automatically creating videos of the night sky with [Stellarium](https://stellarium.org) (0.20.4 or higher) and Linux/BSD.
  
-This archive contains a python 3 script that will automate the process of creating videos of the night sky with stellarium. It will take an observation position and other observation parameters as command line options and then create a [script](http://beltoforion.de/article.php?a=stellarium_video&hl=en#idStellariumScript) for Stellariums built in scripting engine to compute the animation frames for the given date. Once the frames are created the script will invoke ffmpeg to combine the frames into an mp4 video file.
+This archive contains a python script that will automate the process of creating videos of the night sky with stellarium. It will take an observation position and other observation parameters as command line options and then create a [script](http://beltoforion.de/article.php?a=stellarium_video&hl=en#idStellariumScript) for Stellariums built in scripting engine to compute the animation frames for the given date. Once the frames are created the script will invoke ffmpeg to combine the frames into an mp4 video file.
 
 For more details please go to the [web page of this project](https://beltoforion.de/en/stellarium_video/)
 
