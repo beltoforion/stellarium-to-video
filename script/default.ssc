@@ -1,0 +1,80 @@
+    // Author: Ingo Berg
+    // Version: 1.1
+    // License: Public Domain
+    // Name: Stellarium-To-Video
+    // Description: A Script for creating Frames for Stellarium Videos
+
+    param_frame_folder = "$FRAME_FOLDER$"
+    param_az = $AZ$
+    param_alt = $ALT$
+    param_lat = $LAT$
+    param_long = $LONG$
+    param_title = "$TITLE$"
+    param_date = "$DATE$"
+    param_timespan = $TIMESPAN$
+    param_fov = $FOV$
+    param_dt=$DELTAT$
+    
+    function makeVideo(date, file_prefix, caption, hours, long, lat, alt, azi)
+    {
+        core.setDate(date, "utc");
+        core.setObserverLocation(long, lat, 425, 1, "Freiberg", "Earth");
+        core.wait(0.5);
+
+        core.moveToAltAzi(alt, azi)
+        core.wait(0.5);
+
+        label = LabelMgr.labelScreen(caption, 70, 40, false, 40, "#aa0000");
+        LabelMgr.setLabelShow(label, true);
+
+        labelTime = LabelMgr.labelScreen("", 70, 90, false, 25, "#aa0000");
+        LabelMgr.setLabelShow(labelTime, true);
+
+        core.wait(0.5);
+
+        max_sec = hours * 60 * 60
+        for (var sec = 0; sec < max_sec; sec += param_dt) {
+            core.setDate('+' + param_dt + ' seconds');
+            LabelMgr.setLabelText(labelTime, core.getDate(""));
+            core.wait(0.1);
+            core.screenshot(file_prefix);
+        }
+
+        LabelMgr.deleteAllLabels();
+    }
+
+    core.setTimeRate(0); 
+    core.setGuiVisible(false);
+
+    MilkyWay.setFlagShow(true);
+    MilkyWay.setIntensity(4);
+
+    SolarSystem.setFlagPlanets(true);
+    SolarSystem.setMoonScale(6);
+    SolarSystem.setFlagMoonScale(true);
+    SolarSystem.setFontSize(25);
+    
+    StelSkyDrawer.setAbsoluteStarScale(1.5);
+    StelSkyDrawer.setRelativeStarScale(1.65);
+
+    StarMgr.setFontSize(20);
+    StarMgr.setLabelsAmount(3);
+
+    ConstellationMgr.setFlagLines(true);
+    ConstellationMgr.setFlagLabels(true);
+    ConstellationMgr.setArtIntensity(0.1);
+    ConstellationMgr.setFlagArt(true);
+    ConstellationMgr.setFlagBoundaries(false);
+    ConstellationMgr.setConstellationLineThickness(3);
+    ConstellationMgr.setFontSize(18);
+
+    //LandscapeMgr.setCurrentLandscapeName("Hurricane Ridge");
+    LandscapeMgr.setFlagAtmosphere(true);
+
+    StelMovementMgr.zoomTo(param_fov, 0);
+    core.wait(0.5);
+
+    makeVideo(param_date, "frame_", param_title, param_timespan, param_long, param_lat, param_alt, param_az)
+    core.screenshot("final", invert=false, dir=param_frame_folder, overwrite=true);
+    core.setGuiVisible(true);
+    core.quitStellarium();

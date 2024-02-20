@@ -3,9 +3,9 @@
 from skyfield import almanac
 from skyfield.api import load, wgs84
 
-import ffmpeg
 import argparse
 import isodate
+import os
 import os.path
 
 from datetime import datetime, time, timedelta
@@ -18,112 +18,30 @@ import shutil
 
 
 class StellariumToVideo:
-    __script = """
-    // Author: Ingo Berg
-    // Version: 1.1
-    // License: Public Domain
-    // Name: Stellarium-To-Video
-    // Description: A Script for creating Frames for Stellarium Videos
-
-    param_frame_folder = "$FRAME_FOLDER$"
-    param_az = $AZ$
-    param_alt = $ALT$
-    param_lat = $LAT$
-    param_long = $LONG$
-    param_title = "$TITLE$"
-    param_date = "$DATE$"
-    param_timespan = $TIMESPAN$
-    param_fov = $FOV$
-    param_dt=$DELTAT$
-    
-    function makeVideo(date, file_prefix, caption, hours, long, lat, alt, azi)
-    {
-        core.setDate(date, "utc");
-        core.setObserverLocation(long, lat, 425, 1, "Freiberg", "Earth");
-        core.wait(0.5);
-
-        core.moveToAltAzi(alt, azi)
-        core.wait(0.5);
-
-        label = LabelMgr.labelScreen(caption, 70, 40, false, 40, "#aa0000");
-        LabelMgr.setLabelShow(label, true);
-
-        labelTime = LabelMgr.labelScreen("", 70, 90, false, 25, "#aa0000");
-        LabelMgr.setLabelShow(labelTime, true);
-
-        core.wait(0.5);
-
-        max_sec = hours * 60 * 60
-        for (var sec = 0; sec < max_sec; sec += param_dt) {
-            core.setDate('+' + param_dt + ' seconds');
-            LabelMgr.setLabelText(labelTime, core.getDate(""));
-            core.wait(0.1);
-            core.screenshot(file_prefix);
-        }
-
-        LabelMgr.deleteAllLabels();
-    }
-
-    core.setTimeRate(0); 
-    core.setGuiVisible(false);
-
-    MilkyWay.setFlagShow(true);
-    MilkyWay.setIntensity(4);
-
-    SolarSystem.setFlagPlanets(true);
-    SolarSystem.setMoonScale(6);
-    SolarSystem.setFlagMoonScale(true);
-    SolarSystem.setFontSize(25);
-    
-    StelSkyDrawer.setAbsoluteStarScale(1.5);
-    StelSkyDrawer.setRelativeStarScale(1.65);
-
-    StarMgr.setFontSize(20);
-    StarMgr.setLabelsAmount(3);
-
-    ConstellationMgr.setFlagLines(true);
-    ConstellationMgr.setFlagLabels(true);
-    ConstellationMgr.setArtIntensity(0.1);
-    ConstellationMgr.setFlagArt(true);
-    ConstellationMgr.setFlagBoundaries(false);
-    ConstellationMgr.setConstellationLineThickness(3);
-    ConstellationMgr.setFontSize(18);
-
-    //LandscapeMgr.setCurrentLandscapeName("Hurricane Ridge");
-    LandscapeMgr.setFlagAtmosphere(true);
-
-    StelMovementMgr.zoomTo(param_fov, 0);
-    core.wait(0.5);
-
-    makeVideo(param_date, "frame_", param_title, param_timespan, param_long, param_lat, param_alt, param_az)
-    core.screenshot("final", invert=false, dir=param_frame_folder, overwrite=true);
-    core.setGuiVisible(true);
-    core.quitStellarium();"""
-
-
     def __init__(self, args) -> None:
         self.__args = args
-        self.__frame_folder =f"{tempfile.gettempdir()}/kalstar_frames"
-        self.__final_file = self.__frame_folder + "/final.png"
+        tempPath : Path = Path(tempfile.gettempdir()) / 'kalstar_frames'
+        self.__frame_folder = tempPath
+        self.__final_file = self.__frame_folder / 'final.png'
 
         # Create frame folder if it not already exists
-        if os.path.exists(self.__frame_folder):
-            shutil.rmtree(self.__frame_folder)
+        if os.path.exists(str(self.__frame_folder)):
+            shutil.rmtree(str(self.__frame_folder))
 
-        os.mkdir(self.__frame_folder)
-
-
-    def __addSecs(self, tm, secs) -> time:
-        fulldate = datetime(100, 1, 1, tm.hour, tm.minute, tm.second)
-        fulldate = fulldate + timedelta(seconds=secs)
-        return fulldate.time()
+        os.mkdir(str(self.__frame_folder))
 
 
-    def create_script(self) -> None:
-        
+    def create_script(self, script_path : Path) -> None:
+        with open('./script/default.ssc', 'r') as file:
+            script = file.read()
+
+        if os.name == 'nt':
+            script = script.replace("$FRAME_FOLDER$", str(self.__frame_folder).replace("\\", "\\\\"))
+        else:
+            script = script.replace("$FRAME_FOLDER$", str(self.__frame_folder))
+            
         # set the sript variables
-        script = self.__script
-        script = script.replace("$FRAME_FOLDER$", self.__frame_folder)
+        script = script.replace("$FRAME_FOLDER$", str(self.__frame_folder).replace("\\", "\\\\"))
         script = script.replace("$LAT$", str(self.__args.lat))
         script = script.replace("$LONG$", str(self.__args.long))
         script = script.replace("$TITLE$", str(self.__args.title))
@@ -135,13 +53,16 @@ class StellariumToVideo:
         script = script.replace("$ALT$", str(self.__args.alt))
 
         # create the script in stellariums script folder
-        file = open(f"{Path.home()}/.stellarium/scripts/stelarium_to_video.ssc", "w")
+        file = open(script_path / 'stellarium_to_video.ssc', "w")
         file.write(script)
         file.close()
 
     
     def create_frames(self) -> None:
-        proc_stellarium = subprocess.Popen(['stellarium', '--startup-script', 'stelarium_to_video.ssc', '--screenshot-dir', self.__frame_folder], stdout=subprocess.PIPE);
+        if os.name == 'nt':
+            proc_stellarium = subprocess.Popen(['C:\\Program Files\\Stellarium\\stellarium.exe', '--startup-script', 'stellarium_to_video.ssc', '--screenshot-dir', str(self.__frame_folder)], stdout=subprocess.PIPE);
+        else:        
+            proc_stellarium = subprocess.Popen(['stellarium', '--startup-script', 'stellarium_to_video.ssc', '--screenshot-dir', str(self.__frame_folder)], stdout=subprocess.PIPE);
 
         # wait for script finish
         s = 0
@@ -154,17 +75,20 @@ class StellariumToVideo:
 
 
     def create_video(self) -> None:
-        (
-            ffmpeg
-                .input(f'{self.__frame_folder}/frame_%03d.png', r=str(self.__args.fps), f='image2', s='1920x1080')
-                .output(self.__args.outfile, crf='12', pix_fmt='yuv420p')
-                .overwrite_output()
-                .run()        
-        )
+        proc = subprocess.Popen(['ffmpeg',
+                        '-y', # overwrite existing file
+                        '-r', str(self.__args.fps),
+                        '-f', 'image2',
+                        '-s', '1920x1080',
+                        '-i', '{0}/frame_%03d.png'.format(self.__frame_folder),
+                        '-crf', '12',   # niedriger ist besser
+                        '-pix_fmt', 'yuv420p',
+                        self.__args.outfile], stdout=subprocess.PIPE);
+        proc.communicate()
 
         if (self.__args.show_video):
-            proc = subprocess.Popen(['vlc', '--repeat', self.__args.outfile], stdout=subprocess.PIPE);
-            proc.communicate();
+            proc = subprocess.Popen(['vlc', '--repeat', self.__args.outfile], stdout=subprocess.PIPE)
+            proc.communicate()
 
 
 def start_date(s) -> datetime:
@@ -245,18 +169,27 @@ def main() -> None:
     print(f'  - Video caption:    "{args.title}"')
     print(f'  - Output file:      "{args.outfile}"')
 
-    path_home = Path.home()
+    stellarium_data_path : Path
+    if os.name == 'nt':
+        stellarium_data_path = Path.home() / 'AppData' / 'Roaming' / 'Stellarium'
+
+        # check if stellarium is installed where it is expected. 
+        if not os.path.isfile("C:\\Program Files\\Stellarium\\stellarium.exe"):
+            raise Exception('Stellarium not found! This script expects stellarium to be installed in C:\\Program Files\\Stellarium\\stellarium.exe!')
+    else:
+        stellarium_data_path = Path.home() / '.stellarium'
 
     # Check if there is a local stellarium folder
-    if not os.path.isdir(f'{path_home}/.stellarium'):
-        print('Stellarium does not seem to be installed!')
+    if not os.path.isdir(stellarium_data_path.absolute()):
+        raise Exception('Stellarium does not seem to be installed!')
 
     # if there is no local scripts folder, create one
-    if not os.path.isdir(f'{path_home}/.stellarium/scripts'):
-        os.mkdir(f'{path_home}/.stellarium/scripts')
+    script_folder = stellarium_data_path / 'scripts'
+    if not os.path.isdir(script_folder.absolute()):
+        os.mkdir(script_folder.absolute())
 
     sa = StellariumToVideo(args)
-    sa.create_script()
+    sa.create_script(script_folder)
     sa.create_frames()
     sa.create_video()
 
