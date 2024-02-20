@@ -57,4 +57,4 @@ The following command will compute the first 2 hours of night sky in Berlin (Ger
 **python3 kalstar.py** -lat 52.5186 -long 13.4083 -t "Look at all the Stars!" -az 90 -alt 25 -d 2023-09-25 -ts 2 -s -o out.mp4 -fov 70 -dt 30
 
 # Acknowledgements:
-The computation of sunset times in this script is done with [routines written by Michel J. Anders](https://michelanders.blogspot.com/2010/12/calulating-sunrise-and-sunset-in-python.html).
+This script is using [Skyfield](https://rhodesmill.org/skyfield/) for computing sunset times.
