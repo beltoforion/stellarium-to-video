@@ -54,10 +54,14 @@ When this flag is specified an instance of VLC will be started once the video is
 
 The following command will compute the first 2 hours of night sky in Berlin (Germany) on the 25th September of the year 2023. 
 
-**python3 kalstar.py** -lat 52.5186 -long 13.4083 -t "Look at all the Stars!" -az 90 -alt 25 -d 2023-09-25 -ts 2 -s -o out.mp4 -fov 70 -dt 30
+```python
+python3 stellarium-to-video.py -lat 52.5186 -long 13.4083 -t "Look at all the Stars!" -az 90 -alt 25 -d 2023-09-25 -ts 2 -s -o out.mp4 -fov 70 -dt 30
+```
 
+```python
+python3 stellarium-to-video.py -lat 50.9 -long 13.9 -t "Analemma" -az 180 -alt 35 -d 2024-06-20T12:00:00 -ts P1Y -s -o analemma.mp4 -fov 80 -dt P1D
+```
 
-**python3 kalstar.py** -lat 50.9 -long 13.9 -t "Analemma" -az 180 -alt 35 -d 2024-06-20T12:00:00 -ts P1Y -s -o analemma.mp4 -fov 80 -dt P1D
 
 # Acknowledgements:
 This script is using [Skyfield](https://rhodesmill.org/skyfield/) for computing sunset times.
