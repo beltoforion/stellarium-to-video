@@ -8,7 +8,6 @@ For more details please go to the [web page of this project](https://beltoforion
 
 https://user-images.githubusercontent.com/2202567/184002878-0f915485-8a63-49ae-8221-273f61b2c728.mp4
 
-
 # Prerequisites:
 In order to use this script [Stellarium](https://stellarium.org) and [ffmpeg](https://www.ffmpeg.org/) must be installed. You will also need [vlc](https://www.videolan.org/vlc/) if you want to use the -s option.
 
@@ -50,7 +49,7 @@ The name of the output video file.
 _-s_ 	
 When this flag is specified an instance of VLC will be started once the video is created.
 
-# Example:
+# Examples:
 
 The following command will compute the first 2 hours of night sky in Berlin (Germany) on the 25th September of the year 2023. 
 
@@ -61,6 +60,8 @@ This command will create an analemma for the city of Freiberg (Germany) starting
 ```python
 python3 stellarium-to-video.py -lat 50.9 -long 13.9 -t "Analemma" -az 180 -alt 35 -d 2024-06-20T12:00:00 -ts P1Y -s -o analemma.mp4 -fov 80 -dt P1D
 ```
+
+https://github.com/beltoforion/kalstar/assets/2202567/b7ceeec3-38ee-44fc-9d9c-0a7763f4974c
 
 
 # Acknowledgements:
