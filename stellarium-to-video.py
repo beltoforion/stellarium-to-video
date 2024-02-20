@@ -224,7 +224,7 @@ def main() -> None:
     parser.add_argument("-fov", "--FieldOfView", dest="fov", help='The field of view', default='70', type=float)
     parser.add_argument("-t", "--Title", dest="title", help='Caption of the video', required=True)
     parser.add_argument("-ts", "--TimeSpan",dest="timespan", help='Total time span covered by the simulation as ISO 8601 duration (default="PT2H" -> 2 hours)', default='PT2H', type=iso_8661_duration)
-    parser.add_argument("-dt", "--DeltaT", dest="dt", help='Simulated time in between two Frames as an ISO 8601 duration (default="PT2S" -> 2 seconds)', default='PT2S', type=iso_8661_duration)
+    parser.add_argument("-dt", "--DeltaT", dest="dt", help='Simulated time in between two Frames as an ISO 8601 duration (default="PT20S" -> 20 seconds)', default='PT20S', type=iso_8661_duration)
     parser.add_argument("-o", "--Outfile", dest="outfile", help='Output filename', default='out.mp4')
     parser.add_argument("-s", "--Show", dest="show_video", default=False, action='store_true', help='If this flag is set the video is shown after rendering (VLC must be installed)')
     args = parser.parse_args()

@@ -1,7 +1,8 @@
 # Stellarium-To-Video
 Automatically creating videos of the night sky with [Stellarium](https://stellarium.org) (0.20.4 or higher) and Linux/BSD.
  
-This archive contains a python script that will automate the process of creating videos of the night sky with stellarium. It will take an observation position and other observation parameters as command line options and then create a [script](http://beltoforion.de/article.php?a=stellarium_video&hl=en#idStellariumScript) for Stellariums built in scripting engine to compute the animation frames for the given date. Once the frames are created the script will invoke ffmpeg to combine the frames into an mp4 video file.
+This python script will automate the process of creating videos of the night sky with stellarium. It will take an observation position and other observation parameters as command line options and then create a [script](http://beltoforion.de/article.php?a=stellarium_video&hl=en#idStellariumScript) for Stellariums built in scripting engine to compute the animation frames. Once the frames are created the script will invoke ffmpeg to combine the 
+frames into an mp4 video file.
 
 For more details please go to the [web page of this project](https://beltoforion.de/en/stellarium_video/)
 
@@ -26,7 +27,7 @@ _-az 	xx.xxx_
 Azimut in degrees (View direction)
 
 _-d YYYY-MM-DD_	
-The simulation date. The animation will automatically begin an hour after sunset on the specified day.
+The simulation date and time as an ISO 8601 compliant string. If the string does not contain a time and the planet is earth the simulation will start at sunset of the given day.
 
 _-fov xx.xxx_ 	
 The field of view in degrees.
@@ -38,10 +39,10 @@ _-t abc_
 The title of the video. The video title will be superimposed onto the video.
 
 _-ts xx_ 	
-The simulation time span in hours.
+The simulation time as an ISO 8601 duration. (i.e. PT2H for two hours)
 
 _-dt xx_ 	
-The time difference between two sucessive frames in seconds.
+The time difference between two sucessive frames as an ISO 8601 duration (i.e. PT20S for 20 seconds).
 
 _-o abc.mp4_ 
 The name of the output video file.
