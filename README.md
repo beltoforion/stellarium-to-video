@@ -36,7 +36,7 @@ python3 stellarium-to-video.py -l Berlin -c "The Sky over Berlin" -v 90,25,70 -d
 ```
 This command will create an analemma for the city of Freiberg (Germany) starting on 2024-06-20. Time between frames is exactly one day. The simulated time is an entire year.
 ```python
-python3 stellarium-to-video.py -l 13.9,50.9 -t "Analemma" -v 180,33,70 -d 2024-06-20T12:00:00+01:00 -ts P1Y -s -o "analemma.mp4" -dt P1D
+python3 stellarium-to-video.py -l Freiberg -t suntrack.ssc -c Analemma -d2024-06-20T12:00:00+01:00 -ts "P1Y" -s -o output.mp4 -dt P2D
 ```
 
 https://github.com/beltoforion/stellarium-to-video/assets/2202567/c40f8c4f-f63a-4487-ad46-29602272e501
