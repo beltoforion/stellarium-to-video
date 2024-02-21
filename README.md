@@ -19,6 +19,9 @@ Longitude of the observation loaction.
 _-lat xx.xxx_ 
 Latitude of the observation loaction
 
+_-p Planet_ 
+The planet on which the simulation takes place. Must be a planet of the solar system or a celestial body that Stellarium knows about (i.e. "Mercury" or "Sun")
+
 _-alt xx.xxx_ 
 Altitude of the center of the field of view
 
