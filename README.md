@@ -39,8 +39,7 @@ This command will create an analemma for the city of Freiberg (Germany) starting
 python3 stellarium-to-video.py -l 13.9,50.9 -t "Analemma" -v 180,33,70 -d 2024-06-20T12:00:00+01:00 -ts P1Y -s -o "analemma.mp4" -dt P1D
 ```
 
-https://github.com/beltoforion/kalstar/assets/2202567/b7ceeec3-38ee-44fc-9d9c-0a7763f4974c
-
+https://github.com/beltoforion/stellarium-to-video/assets/2202567/c40f8c4f-f63a-4487-ad46-29602272e501
 
 # Acknowledgements:
 This script is using [Skyfield](https://rhodesmill.org/skyfield/) for computing sunset times.
