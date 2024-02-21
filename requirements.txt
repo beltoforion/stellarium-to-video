@@ -1,4 +1,3 @@
-skyfield==1.39
-ffmpeg-python==0.2.0
+skyfield==1.48
 argparse==1.4.0
 geopy==2.4.1
