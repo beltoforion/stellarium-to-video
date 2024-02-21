@@ -13,55 +13,30 @@ In order to use this script [Stellarium](https://stellarium.org) and [ffmpeg](ht
 
 # Command Line Options:
 
-_-long xx.xxx_ 
-Longitude of the observation loaction.
-
-_-lat xx.xxx_ 
-Latitude of the observation loaction
-
-_-p Planet_ 
-The planet on which the simulation takes place. Must be a planet of the solar system or a celestial body that Stellarium knows about (i.e. "Mercury" or "Sun")
-
-_-alt xx.xxx_ 
-Altitude of the center of the field of view
-
-_-az 	xx.xxx_ 	
-Azimut in degrees (View direction)
-
-_-d YYYY-MM-DD_	
-The simulation date and time as an ISO 8601 compliant string. If the string does not contain a time and the planet is earth the simulation will start at sunset of the given day.
-
-_-fov xx.xxx_ 	
-The field of view in degrees.
-
-_-fps xx_ 	
-Frame rate of the output video.
-
-_-t abc_ 	
-The title of the video. The video title will be superimposed onto the video.
-
-_-ts xx_ 	
-The simulation time as an ISO 8601 duration. (i.e. PT2H for two hours)
-
-_-dt xx_ 	
-The time difference between two sucessive frames as an ISO 8601 duration (i.e. PT20S for 20 seconds).
-
-_-o abc.mp4_ 
-The name of the output video file.
-
-_-s_ 	
-When this flag is specified an instance of VLC will be started once the video is created.
+| Parameter | Parameter Type | Description |
+| --- | --- | --- |
+| -c (optional) | string | The caption of the video. The video title will be superimposed onto the video. If this parameter is omitted a default caption will be used. |
+| -d (optional) | [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) Date and Time | The simulation date as ISO 8601 string (i.e. 2024-02-20T16:37:05). If the time portion is omitted and the selected base planet is Earth the script will automatically start at sunset of the location given with the -l option. If this parameter is omitted the simulation will start at the sunset time of the current day. |
+| -dt (optional) | [ISO 8601 Duration](https://www.digi.com/resources/documentation/digidocs/90001488-13/reference/r_iso_8601_duration_format.htm) | The time difference between two successive frames as a string representing an ISO 8601 duration (i.e. PT20S for 20 seconds). |
+| -fps (optional) | int | Frame rate of the output video. |
+| -l | float, float<br/>string | Location of the observer. This is either a string containing longitude and latitude as a comma separated list or the name of a city. If a city name is given the script will automatically try to find the proper coordinates for it. Examples: -l Berlin, -l 52.5186,13.4083 |
+| -o (optional) | string | The name of the output video file. |
+| -p (optional) | string | The planet on which the simulation shall take place. ('Earth', 'Mars', 'Venus', 'Mercury', ...) If this parameter is omitted the simulation will be assuming Earth as its celestial home. Examples: -p Mercury |
+| -s (optional) | - | When this flag is specified an instance of VLC will be started once the video is created. VLC must be installed and the VLC binary must be in the search path. |
+| -t (optional) | string | The stellarium script template. This is a ssc file with placeholders that must be located in the scripts folder. It contains placeholders that will be replaced with the parameters of the python script to define the time and location of the simulation. You can create different script templates to customize the look of the animation. If this parameter is omitted the script will use a default template. |
+| -ts (optional) | [ISO 8601 Duration](https://www.digi.com/resources/documentation/digidocs/90001488-13/reference/r_iso_8601_duration_format.htm) | The simulation time span as an ISO 8601 Duration string (i.e. PT2H for 2 hours). If this parameter is omitted the duration is set to 2 hours. |
+| -v (optional) | float,float,float | A comma separated list of three floating point values defining the direction of view. The values represent azimuth, altitude and field of view. |
 
 # Examples:
 
 The following command will compute the first 2 hours of night sky in Berlin (Germany) on the 25th September of the year 2023. 
 
 ```python
-python3 stellarium-to-video.py -lat 52.5186 -long 13.4083 -t "Look at all the Stars!" -az 90 -alt 25 -d 2023-09-25 -ts PT2H -s -o out.mp4 -fov 70 -dt PT30S
+python3 stellarium-to-video.py -l Berlin -c "The Sky over Berlin" -v 90,25,70 -d 2024-09-25 -ts PT2H -s -o berlin-sky.mp4 -dt PT1M
 ```
 This command will create an analemma for the city of Freiberg (Germany) starting on 2024-06-20. Time between frames is exactly one day. The simulated time is an entire year.
 ```python
-python3 stellarium-to-video.py -lat 50.9 -long 13.9 -t "Analemma" -az 180 -alt 35 -d 2024-06-20T12:00:00 -ts P1Y -s -o analemma.mp4 -fov 80 -dt P1D
+python3 stellarium-to-video.py -l 13.9,50.9 -t "Analemma" -v 180,33,70 -d 2024-06-20T12:00:00+01:00 -ts P1Y -s -o "analemma.mp4" -dt P1D
 ```
 
 https://github.com/beltoforion/kalstar/assets/2202567/b7ceeec3-38ee-44fc-9d9c-0a7763f4974c
