@@ -1,6 +1,5 @@
     // Author: Ingo Berg
     // Version: 1.1
-    // License: Public Domain
     // Name: Stellarium-To-Video
     // Description: A Script for creating Frames for Stellarium Videos
 
@@ -14,11 +13,12 @@
     param_timespan = $TIMESPAN$
     param_fov = $FOV$
     param_dt=$DELTAT$
+    param_planet="$PLANET$"
     
     function makeVideo(date, file_prefix, caption, hours, long, lat, alt, azi)
     {
         core.setDate(date, "utc");
-        core.setObserverLocation(long, lat, 425, 1, "Freiberg", "Earth");
+        core.setObserverLocation(long, lat, 425, 1, "Freiberg", param_planet);
         core.wait(0.5);
 
         core.moveToAltAzi(alt, azi)
@@ -33,9 +33,17 @@
         core.wait(0.5);
 
         max_sec = hours * 60 * 60
+        var color = "#aa0000";
+        
         for (var sec = 0; sec < max_sec; sec += param_dt) {
             core.setDate('+' + param_dt + ' seconds');
             LabelMgr.setLabelText(labelTime, core.getDate(""));
+
+            var info = core.getObjectInfo("Sun");
+            var az = info.azimuth;
+            var alt = info.altitude;
+            MarkerMgr.markerHorizon(az, alt, true, "gear", color, 5); 
+
             core.wait(0.1);
             core.screenshot(file_prefix);
         }
@@ -68,7 +76,25 @@
     ConstellationMgr.setConstellationLineThickness(3);
     ConstellationMgr.setFontSize(18);
 
-    //LandscapeMgr.setCurrentLandscapeName("Hurricane Ridge");
+    if (param_planet == "Mercury" || param_planet == "Venus") {
+        LandscapeMgr.setCurrentLandscapeName("Zero Horizon");
+    } else if (param_planet == "Mars") {
+        LandscapeMgr.setCurrentLandscapeName("Mars");
+    } else if (param_planet == "Moon") {
+        LandscapeMgr.setCurrentLandscapeName("Moon");
+    } else if (param_planet == "Jupiter") {
+        LandscapeMgr.setCurrentLandscapeName("Jupiter");
+    } else if (param_planet == "Saturn") {
+        LandscapeMgr.setCurrentLandscapeName("Saturn");
+    } else if (param_planet == "Neptune") {
+        LandscapeMgr.setCurrentLandscapeName("Neptune");
+    } else if (param_planet == "Uranus") {
+        LandscapeMgr.setCurrentLandscapeName("Uranus");
+    } else if (param_planet == "Sun") {
+        LandscapeMgr.setCurrentLandscapeName("Sun");
+    } else {
+        // use default
+    } 
     LandscapeMgr.setFlagAtmosphere(true);
 
     StelMovementMgr.zoomTo(param_fov, 0);

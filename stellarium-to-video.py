@@ -206,8 +206,9 @@ class StellariumToVideo:
                         '-y', # overwrite existing file
                         '-r', str(self.__param.fps),
                         '-f', 'image2',
-                        '-s', '1920x1080',
                         '-i', f'{self.__frame_folder}/frame_%03d.png',
+#                        '-s', '1920x1080',
+                        '-s', '960x540',                        
                         '-crf', '12',   # niedriger ist besser
                         '-pix_fmt', 'yuv420p',
                         self.__param.outfile], stdout=subprocess.PIPE)

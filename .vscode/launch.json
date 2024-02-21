@@ -9,7 +9,7 @@
             "console": "integratedTerminal",
             "justMyCode": true,
 //            "args": ["-l", "50.9,13.9", "-c", "Look at all the Stars!", "-v", "90,25,70", "-d", "2024-02-20", "-ts", "PT2H", "-s", "-o", "output.mp4", "-dt", "30"]
-            "args": ["-v", "180,33,70", "-l", "Freiberg", "-c", "Analemma", "-d", "2024-06-20T12:00:00+01:00", "-ts", "P1Y", "-s", "-o", "output.mp4", "-dt", "P1D"]
+            "args": ["-v", "180,33,70", "-l", "Freiberg", "-c", "Analemma", "-d", "2024-06-20T12:00:00+01:00", "-ts", "P1Y", "-s", "-o", "analemma.mp4", "-dt", "P2D", "-tsuntrack.ssc"]
 //            "args": ["-l-90,0", "-c", "Double Sunrise on Mercury", "-v", "90,10,40", "-d", "2019-05-16T12:00:00", "-ts", "P24D", "-s", "-o", "mercury.mp4", "-dt", "PT2H", "-p", "Mercury"]
         }
     ]
