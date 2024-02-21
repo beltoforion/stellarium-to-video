@@ -9,7 +9,8 @@
             "console": "integratedTerminal",
             "justMyCode": true,
 //            "args": ["-lat", "50.9", "-long", "13.9", "-t", "Look at all the Stars!", "-az", "90", "-alt", "25", "-d", "2024-02-20", "-ts", "PT2H", "-s", "-o", "output.mp4", "-fov", "70", "-dt", "30"]
-            "args": ["-lat", "50.9", "-long", "13.9", "-t", "Analemma", "-az", "180", "-alt", "35", "-d", "2024-06-20T12:00:00", "-ts", "P1Y", "-s", "-o", "output.mp4", "-fov", "80", "-dt", "P1D"]
+//            "args": ["-lat", "50.9", "-long", "13.9", "-t", "Analemma", "-az", "180", "-alt", "35", "-d", "2024-06-20T12:00:00", "-ts", "P1Y", "-s", "-o", "analemma.mp4", "-fov", "80", "-dt", "P1D"]
+            "args": ["-lat", "0", "-long", "-90", "-t", "Double Sunrise on Mercury", "-az", "90", "-alt", "10", "-d", "2019-05-16T12:00:00", "-ts", "P24D", "-s", "-o", "mercury.mp4", "-fov", "40", "-dt", "PT2H", "-p", "Mercury"]
         }
     ]
 }
