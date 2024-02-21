@@ -68,7 +68,25 @@
     ConstellationMgr.setConstellationLineThickness(3);
     ConstellationMgr.setFontSize(18);
 
-    //LandscapeMgr.setCurrentLandscapeName("Hurricane Ridge");
+    if (param_planet == "Mercury" || param_planet == "Venus") {
+        LandscapeMgr.setCurrentLandscapeName("Zero Horizon");
+    } else if (param_planet == "Mars") {
+        LandscapeMgr.setCurrentLandscapeName("Mars");
+    } else if (param_planet == "Moon") {
+        LandscapeMgr.setCurrentLandscapeName("Moon");
+    } else if (param_planet == "Jupiter") {
+        LandscapeMgr.setCurrentLandscapeName("Jupiter");
+    } else if (param_planet == "Saturn") {
+        LandscapeMgr.setCurrentLandscapeName("Saturn");
+    } else if (param_planet == "Neptune") {
+        LandscapeMgr.setCurrentLandscapeName("Neptune");
+    } else if (param_planet == "Uranus") {
+        LandscapeMgr.setCurrentLandscapeName("Uranus");
+    } else if (param_planet == "Sun") {
+        LandscapeMgr.setCurrentLandscapeName("Sun");
+    } else {
+        // use default
+    } 
     LandscapeMgr.setFlagAtmosphere(true);
 
     StelMovementMgr.zoomTo(param_fov, 0);
