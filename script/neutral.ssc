@@ -1,5 +1,6 @@
     // Author: Ingo Berg
     // Version: 1.1
+    // License: Public Domain
     // Name: Stellarium-To-Video
     // Description: A Script for creating Frames for Stellarium Videos
 
@@ -13,12 +14,11 @@
     param_timespan = $TIMESPAN$
     param_fov = $FOV$
     param_dt=$DELTAT$
-    param_planet="$PLANET$"
     
     function makeVideo(date, file_prefix, caption, hours, long, lat, alt, azi)
     {
         core.setDate(date, "utc");
-        core.setObserverLocation(long, lat, 425, 1, "Freiberg", param_planet);
+        core.setObserverLocation(long, lat, 425, 1, "Freiberg", "Earth");
         core.wait(0.5);
 
         core.moveToAltAzi(alt, azi)
