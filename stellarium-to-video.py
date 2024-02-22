@@ -40,7 +40,7 @@ class Parameters:
         self.__show_video : bool = args.show_video
         self.__template : str = args.template
         self.__start_date : datetime = self.__determine_start_time(args.date)
-
+        self.__size = args.size
 
     def __determine_start_time(self, date: datetime) -> datetime:
         if date.hour==0 and date.minute==0 and date.second==0 and self.planet=='Earth':
@@ -133,14 +133,20 @@ class Parameters:
     def show_video(self) -> bool:
         return self.__show_video
     
+
     @property
     def start_at_sunset(self) -> bool:
         return self.__start_at_sunset
     
+
     @property
     def template(self) -> str:
         return self.__template  
 
+
+    @property
+    def size(self) -> str:
+        return self.__size
 
 class StellariumToVideo:
     def __init__(self, param : Parameters) -> None:
@@ -208,7 +214,8 @@ class StellariumToVideo:
                         '-f', 'image2',
                         '-i', f'{self.__frame_folder}/frame_%03d.png',
 #                        '-s', '1920x1080',
-                        '-s', '960x540',                        
+#                        '-s', '960x540',                        
+                        '-s', self.__param.size,
                         '-crf', '12',   # niedriger ist besser
                         '-pix_fmt', 'yuv420p',
                         self.__param.outfile], stdout=subprocess.PIPE)
@@ -272,21 +279,35 @@ def arg_to_location(s : str) -> Tuple[list, str]:
         raise argparse.ArgumentTypeError("Each value must be a floating point number")
 
 
+def arg_to_size(s : str) -> str:
+    try:
+        list = [int(item) for item in s.split('x')]
+        if len(list) != 2:
+            raise argparse.ArgumentTypeError('Size parameter must have the form "1920x1080"')
+        
+        if list[0] % 2 != 0 or list[1] % 2 != 0:
+            raise argparse.ArgumentTypeError('Both values of the size parameter must be divisible by 2!')
+
+        return s
+    except ValueError:
+        raise argparse.ArgumentTypeError('Size parameter must be of the form "1920x1080"')
+
+
 def check_prerequisites() -> None:
     print(f'Checking prerequisites:')
-    stellarium_path : str = shutil.which('stellarium')
+    stellarium_path : str | None = shutil.which('stellarium')
     if stellarium_path is None:
         raise Exception('Stellarium not found! This script requires Stellarium to be installed and available in the system path!')
     else:
         print(f'  - Stellarium found at "{stellarium_path}"')
 
-    ffmpeg_path : str = shutil.which('ffmpeg')
+    ffmpeg_path : str | None = shutil.which('ffmpeg')
     if ffmpeg_path is None:
         raise Exception('FFMPEG not found! This script requires FFMPEG to be installed and available in the system path!')
     else:
         print(f'  - ffmpeg found at "{ffmpeg_path}"')
 
-    vlc_path : str = shutil.which('vlc')
+    vlc_path : str | None = shutil.which('vlc')
     if vlc_path is None:
         raise Exception('VLC not found! This script requires VLC to be installed and available in the system path!')
     else:
@@ -299,13 +320,14 @@ def main() -> None:
     parser.add_argument("-d", "--DateTime", dest="date", help='A date time string in UTC. If no date is given todays date is used. If no time is given the animation automatically starts an hour after sunset.', required=False, type=arg_to_start_date, default=date.today().isoformat())
     parser.add_argument("-dt", "--DeltaT", dest="dt", help='Simulated time in between two Frames as an ISO 8601 duration (default="PT20S" -> 20 seconds)', default='PT20S', type=arg_to_iso_8661_duration)
     parser.add_argument("-fps", "--FramesPerSecond", dest="fps", help='Frame rate of the output video', default='30', type=arg_to_positive_number)
-    parser.add_argument("-l", "--Location", dest="loc", help='Location of the observer', default="13.9,50.9", type=arg_to_location)
+    parser.add_argument("-l", "--Location", dest="loc", help='Location of the observer', default="13.9,50.9", required=True, type=arg_to_location)
     parser.add_argument("-o", "--Outfile", dest="outfile", help='Output filename', default='out.mp4')
     parser.add_argument("-p", "--Planet", dest="planet", help='The planet you are on.', default='Earth', type=str)
     parser.add_argument("-s", "--Show", dest="show_video", default=True, action='store_true', help='If this flag is set the video is shown after rendering (VLC must be installed)')
     parser.add_argument("-t", "--Template", dest="template", help='The template script. This must be the name of a ssc script in the script folder)', required=False, default='default.ssc', type=str)    
     parser.add_argument("-ts", "--TimeSpan",dest="timespan", help='Total time span covered by the simulation as ISO 8601 duration (default="PT2H" -> 2 hours)', default='PT2H', type=arg_to_iso_8661_duration)
     parser.add_argument("-v", "--View", dest="view", help='Defines the view Altitude, Azimuth, Field of View', default="180,35.0,70.0", type=arg_to_vec3)
+    parser.add_argument("-sz", "--Size", dest="size", help='The size of the output video. Example: "1920x1080"', default="1920x1080", required=False, type=arg_to_size)
 
     param = Parameters(parser.parse_args())
 
