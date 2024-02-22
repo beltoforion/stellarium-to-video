@@ -171,9 +171,7 @@ class StellariumToVideo:
         else:
             script = script.replace("$FRAME_FOLDER$", str(self.__frame_folder))
 
-
         # set the sript variables
-        script = script.replace("$FRAME_FOLDER$", str(self.__frame_folder).replace("\\", "\\\\"))
         script = script.replace("$LAT$", str(self.__param.lat))
         script = script.replace("$LONG$", str(self.__param.lon))
         script = script.replace("$TITLE$", str(self.__param.caption))
