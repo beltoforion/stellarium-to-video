@@ -272,6 +272,27 @@ def arg_to_location(s : str) -> Tuple[list, str]:
         raise argparse.ArgumentTypeError("Each value must be a floating point number")
 
 
+def check_prerequisites() -> None:
+    print(f'Checking prerequisites:')
+    stellarium_path : str = shutil.which('stellarium')
+    if stellarium_path is None:
+        raise Exception('Stellarium not found! This script requires Stellarium to be installed and available in the system path!')
+    else:
+        print(f'  - Stellarium found at "{stellarium_path}"')
+
+    ffmpeg_path : str = shutil.which('ffmpeg')
+    if ffmpeg_path is None:
+        raise Exception('FFMPEG not found! This script requires FFMPEG to be installed and available in the system path!')
+    else:
+        print(f'  - ffmpeg found at "{ffmpeg_path}"')
+
+    vlc_path : str = shutil.which('vlc')
+    if vlc_path is None:
+        raise Exception('VLC not found! This script requires VLC to be installed and available in the system path!')
+    else:
+        print(f'  - Vlc found at "{vlc_path}"')
+
+
 def main() -> None:
     parser = argparse.ArgumentParser("stellarium-to-video.py - A star motion video generator")
     parser.add_argument("-c", "--Caption", dest="caption", help='Caption of the video', required=False, default='The Night Sky')
@@ -294,7 +315,10 @@ def main() -> None:
     print('#  Stellarium-To-Video - Generating videos of the night sky  #')
     print('#                                                            #')    
     print('##############################################################')
-    print('')    
+    print('')  
+    
+    check_prerequisites()
+
     print(f'Location:')
     print(f'  - lon={param.lon}, lat={param.lat}, address="{param.city}"')
     print(f'  - planet="{param.planet}"')
@@ -337,7 +361,7 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-#    try:
+    try:
         main()
-#    except Exception as e:
-#        print('\033[91m' + f'Error: {e}' + '\033[0m')
+    except Exception as e:
+        print('\033[91m' + f'Error: {e}' + '\033[0m')
