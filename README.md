@@ -34,7 +34,11 @@ The following command will compute the first 2 hours of night sky in Berlin (Ger
 ```python
 python3 stellarium-to-video.py -l Berlin -c "The Sky over Berlin" -v 90,25,70 -d 2024-09-25 -ts PT2H -s -o berlin-sky.mp4 -dt PT1M
 ```
-This command will create an analemma for the city of Freiberg (Germany) starting on 2024-06-20. Time between frames is exactly one day. The simulated time is an entire year.
+https://github.com/beltoforion/stellarium-to-video/assets/2202567/7fad5e5d-1c34-49ed-bc37-295ef63cfebe
+
+The next example will create an analemma for my home town, the city of Freiberg (Germany) starting on 2024-06-20. The time between two frames is two days. The simulated time is an entire year.
+The command uses a different stellarium script template named "suntrack.ssc". The only difference to the default template is that in each frame the position of the sun is marked
+with a red circle. This demonstrates how you can customize the content of your videos with specific stellarium script templates.
 ```python
 python3 stellarium-to-video.py -l Freiberg -t suntrack.ssc -c Analemma -d2024-06-20T12:00:00+01:00 -ts P1Y -s -o output.mp4 -dt P2D
 ```
