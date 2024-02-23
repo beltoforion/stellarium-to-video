@@ -325,6 +325,10 @@ def check_prerequisites() -> str:
         print('\033[93m' + 'Warning: Local script folder does not exist. I\'m creating it for you.' + '\033[0m')
         os.mkdir(script_folder.absolute())
 
+    # Does the script folder exist now?
+    if not os.path.isdir(script_folder.absolute()):
+        raise Exception(f'The folder for stellarium user scripts cannot be found and an attempt to create it failed! ({script_folder})')
+    
     return script_folder
 
 
