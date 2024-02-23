@@ -9,12 +9,12 @@ import isodate
 import os
 import os.path
 
-from datetime import datetime, date, time, timedelta, timezone
+from datetime import datetime, date, timezone
 from pathlib import Path
 from geopy.geocoders import Nominatim
 
 import subprocess
-import time as xxx
+import time
 import tempfile
 import shutil
 
@@ -56,7 +56,7 @@ class Parameters:
             t_set, y_set = almanac.find_settings(observer, eph['Sun'], t0, t1)
             
             if y_set[0]==False:
-                raise ValueError(f'You must specify a specific time because the location {lon},{lat} is experiencing either polar day or polar night! The script cannot compute a sunset time for this date: {date.isoformat()}.')
+                raise ValueError(f'You must specify a specific time because the location {self.lon},{self.lat} is experiencing either polar day or polar night! The script cannot compute a sunset time for this date: {date.isoformat()}.')
 
             return t_set[0].utc_datetime()
         else:
@@ -190,16 +190,13 @@ class StellariumToVideo:
 
     
     def create_frames(self) -> None:
-        if os.name == 'nt':
-            proc_stellarium = subprocess.Popen(['C:\\Program Files\\Stellarium\\stellarium.exe', '--startup-script', 'stellarium_to_video.ssc', '--screenshot-dir', str(self.__frame_folder)], stdout=subprocess.PIPE);
-        else:        
-            proc_stellarium = subprocess.Popen(['stellarium', '--startup-script', 'stellarium_to_video.ssc', '--screenshot-dir', str(self.__frame_folder)], stdout=subprocess.PIPE);
+        proc_stellarium = subprocess.Popen(['stellarium', '--startup-script', 'stellarium_to_video.ssc', '--screenshot-dir', str(self.__frame_folder)], stdout=subprocess.PIPE);
 
         # wait for script finish
         s = 0
         timeout = 600
         while not os.path.exists(self.__final_file) and s < timeout:
-            xxx.sleep(1)
+            time.sleep(1)
             s = s + 1
 
         proc_stellarium.kill()
@@ -291,7 +288,7 @@ def arg_to_size(s : str) -> str:
         raise argparse.ArgumentTypeError('Size parameter must be of the form "1920x1080"')
 
 
-def check_prerequisites() -> None:
+def check_prerequisites() -> str:
     print(f'Checking prerequisites:')
     stellarium_path : str | None = shutil.which('stellarium')
     if stellarium_path is None:
@@ -310,6 +307,25 @@ def check_prerequisites() -> None:
         raise Exception('VLC not found! This script requires VLC to be installed and available in the system path!')
     else:
         print(f'  - Vlc found at "{vlc_path}"')
+
+    # check stellarium user data path
+    stellarium_data_path : Path
+    if os.name == 'nt':
+        stellarium_data_path = Path.home() / 'AppData' / 'Roaming' / 'Stellarium'
+    else:
+        stellarium_data_path = Path.home() / '.stellarium'
+    
+    # Check if there is a local stellarium folder
+    if not os.path.isdir(stellarium_data_path.absolute()):
+        raise Exception(f'Cannot find the Stellarium user data path ({stellarium_data_path.absolute()}). Is Stellarium properly installed?')
+
+    # If there is no local scripts folder, create one
+    script_folder = stellarium_data_path / 'scripts'
+    if not os.path.isdir(script_folder.absolute()):
+        print('\033[93m' + 'Warning: Local script folder does not exist. I\'m creating it for you.' + '\033[0m')
+        os.mkdir(script_folder.absolute())
+
+    return script_folder
 
 
 def main() -> None:
@@ -337,7 +353,7 @@ def main() -> None:
     print('##############################################################')
     print('')  
     
-    check_prerequisites()
+    script_folder : str = check_prerequisites()
 
     print(f'Location:')
     print(f'  - lon={param.lon}, lat={param.lat}, address="{param.city}"')
@@ -354,25 +370,6 @@ def main() -> None:
 
     if param.start_at_sunset:
         print('\033[93m' + 'Warning: No time given. The script will try to use the sunset time of the given day!' + '\033[0m')
-
-    stellarium_data_path : Path
-    if os.name == 'nt':
-        stellarium_data_path = Path.home() / 'AppData' / 'Roaming' / 'Stellarium'
-
-        # check if stellarium is installed where it is expected. 
-        if not os.path.isfile("C:\\Program Files\\Stellarium\\stellarium.exe"):
-            raise Exception('Stellarium not found! This script expects stellarium to be installed in C:\\Program Files\\Stellarium\\stellarium.exe!')
-    else:
-        stellarium_data_path = Path.home() / '.stellarium'
-
-    # Check if there is a local stellarium folder
-    if not os.path.isdir(stellarium_data_path.absolute()):
-        raise Exception('Stellarium does not seem to be installed!')
-
-    # if there is no local scripts folder, create one
-    script_folder = stellarium_data_path / 'scripts'
-    if not os.path.isdir(script_folder.absolute()):
-        os.mkdir(script_folder.absolute())
 
     sa = StellariumToVideo(param)
     sa.create_script(script_folder)
