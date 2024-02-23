@@ -9,7 +9,9 @@ For more details please go to the [web page of this project](https://beltoforion
 https://user-images.githubusercontent.com/2202567/184002878-0f915485-8a63-49ae-8221-273f61b2c728.mp4
 
 # Prerequisites:
-In order to use this script [Stellarium](https://stellarium.org) and [ffmpeg](https://www.ffmpeg.org/) must be installed. You will also need [vlc](https://www.videolan.org/vlc/) if you want to use the -s option.
+In order to use this script [Stellarium](https://stellarium.org), [ffmpeg](https://www.ffmpeg.org/) and [vlc](https://www.videolan.org/vlc/) need to be present on your system. You must also
+make sure that the location of their executables is in the global search path! This is automatically the case when you are on Linux on Windows however you have to manually add the
+corresponding folders to the PATH environment variable.
 
 # Command Line Options:
 
