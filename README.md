@@ -47,5 +47,17 @@ python3 stellarium-to-video.py -l Freiberg -t suntrack.ssc -c Analemma -d2024-06
 
 https://github.com/beltoforion/stellarium-to-video/assets/2202567/c40f8c4f-f63a-4487-ad46-29602272e501
 
+The last example is showing the apparent motion of Mars, Mercury, Venus, Saturn and Jupiter as they danced around the sun in 1961. It was a rare occurence were 5 Planets 
+were just within 17 degrees of one another in the constellation aquarius. This example was created with a customized stellarium script template that disabled the atmosphere
+(the alignment happend at daylight) and adds tracking marker to the planets.
+
+```python
+python3 stellarium-to-video.py -v180,30,70 -l Freiberg -c "Dance of Planets" -d1961-10-08T12:00:00+01:00 -ts P6M -s -o "dance.mp4" -dt P1D -tplanet_track.ssc -sz960x540
+```
+
+https://github.com/beltoforion/stellarium-to-video/assets/2202567/2faa0861-ecc2-484a-9a12-082c51b60166
+
 # Acknowledgements:
-This script is using [Skyfield](https://rhodesmill.org/skyfield/) for computing sunset times.
+This project would not be possible without [Stellarium](https://stellarium.org)! It is a fantastic program that is also open source and free to use! Special thanks to 
+the people behind who created and maintain it. This script is also using [Skyfield](https://rhodesmill.org/skyfield/) for computing sunset times. Skyfield is great and 
+does so much more than mere sunset computations on earth and finally I'd like to thank the makers of ffmpeg and VLC.
