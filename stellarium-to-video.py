@@ -166,31 +166,6 @@ class Parameters:
         return self.__window_size
 
 
-def resize_window(title : str, width : int, height : int):
-    ewmh = EWMH()
-    windows = ewmh.getClientList()
-    for win in windows:
-        title = ewmh.getWmName(win)
-        if isinstance(title, bytes):
-            title = title.decode('utf-8', 'replace')#
-        pattern = r'^Stellarium \d+\.\d+\.\d+$'
-        if bool(re.match(pattern, title)):
-            ewmh.setWmState(win, 0, '_NET_WM_STATE_FULLSCREEN')
-
-            # setting width/size her is pointless. The window manager will clip it to the screen dimensions.
-            # This window will not have the proper size when the size is larger than the screen.
-            ewmh.setMoveResizeWindow(win, x=0, y=0, w=width, h=height, gravity=0)            
-            ewmh.display.flush() 
-
-
-
-            # now move the window up so that its upper left corner is outside the screen. 
-            ewmh.setMoveResizeWindow(win, x=0, y=0, w=width, h=height, gravity=0)            
-            ewmh.display.flush()  # Apply changes
-
-        print(title)
-
-
 class StellariumToVideo:
     def __init__(self, param : Parameters) -> None:
         tempPath : Path = Path(tempfile.gettempdir()) / 'kalstar_frames'
@@ -286,7 +261,8 @@ class StellariumToVideo:
             title = ewmh.getWmName(win)
             if isinstance(title, bytes):
                 title = title.decode('utf-8', 'replace')#
-            pattern = r'^Stellarium \d+\.\d+\.\d+$'
+
+            pattern = r'^Stellarium \d+\.\d+(\.\d+)?$'
             if bool(re.match(pattern, title)):
                 ewmh.setWmState(win, 0, '_NET_WM_STATE_FULLSCREEN')
 
