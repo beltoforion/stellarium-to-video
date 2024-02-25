@@ -25,6 +25,8 @@ corresponding folders to the PATH environment variable.
 | -o (optional) | string | The name of the output video file. |
 | -p (optional) | string | The planet on which the simulation shall take place. ('Earth', 'Mars', 'Venus', 'Mercury', ...) If this parameter is omitted the simulation will be assuming Earth as its celestial home. Examples: -p Mercury |
 | -s (optional) | - | When this flag is specified an instance of VLC will be started once the video is created. VLC must be installed and the VLC binary must be in the search path. |
+| -sz (optional) | WIDTHxHEIGHT | The resolution of the video to be created. Must be a string with format "WIDTHxHEIGHT" (i.e. 1920x1080) |
+| -wsz (optional) | WIDTHxHEIGHT | If this parameter is given Stellarium will executed a window with the given resolution. Must be a string with format "WIDTHxHEIGHT" (i.e. 1920x1080) |
 | -t (optional) | string | The stellarium script template. This is a ssc file with placeholders that must be located in the scripts folder. It contains placeholders that will be replaced with the parameters of the python script to define the time and location of the simulation. You can create different script templates to customize the look of the animation. If this parameter is omitted the script will use a default template. |
 | -ts (optional) | [ISO 8601 Duration](https://www.digi.com/resources/documentation/digidocs/90001488-13/reference/r_iso_8601_duration_format.htm) | The simulation time span as an ISO 8601 Duration string (i.e. PT2H for 2 hours). If this parameter is omitted the duration is set to 2 hours. |
 | -v (optional) | float,float,float | A comma separated list of three floating point values defining the direction of view. The values represent azimuth, altitude and field of view. |
@@ -56,6 +58,13 @@ python3 stellarium-to-video.py -v180,30,70 -l Freiberg -c "Dance of Planets" -d1
 ```
 
 https://github.com/beltoforion/stellarium-to-video/assets/2202567/2faa0861-ecc2-484a-9a12-082c51b60166
+
+You can also create videos in portait mode. However that only works it you are using Linux and the GNOME window manager.
+
+```python
+python3 stellarium-to-video.py -v180,30,70 -l Freiberg -c "Dance of Planets" -d1961-10-08T12:00:00+01:00 -ts P6M -s -o "dance.mp4" -dt P1D -tplanet_track.ssc -sz1080x1920 -wsz1080x1920
+```
+https://github.com/beltoforion/stellarium-to-video/assets/2202567/baee9422-7594-4fc3-a7c0-fe4562d6a518
 
 # Acknowledgements:
 This project would not be possible without [Stellarium](https://stellarium.org)! It is a fantastic program that is also open source and free to use! Special thanks to 
