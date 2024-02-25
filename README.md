@@ -57,6 +57,12 @@ python3 stellarium-to-video.py -v180,30,70 -l Freiberg -c "Dance of Planets" -d1
 
 https://github.com/beltoforion/stellarium-to-video/assets/2202567/2faa0861-ecc2-484a-9a12-082c51b60166
 
+
+
+https://github.com/beltoforion/stellarium-to-video/assets/2202567/baee9422-7594-4fc3-a7c0-fe4562d6a518
+
+
+
 # Acknowledgements:
 This project would not be possible without [Stellarium](https://stellarium.org)! It is a fantastic program that is also open source and free to use! Special thanks to 
 the people behind who created and maintain it. This script is also using [Skyfield](https://rhodesmill.org/skyfield/) for computing sunset times. Skyfield is great and 
