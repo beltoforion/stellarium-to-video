@@ -6,6 +6,7 @@ from typing import Tuple
 
 import argparse
 import isodate
+import re
 import os
 import os.path
 
@@ -40,7 +41,17 @@ class Parameters:
         self.__show_video : bool = args.show_video
         self.__template : str = args.template
         self.__start_date : datetime = self.__determine_start_time(args.date)
-        self.__size = args.size
+        self.__video_size = args.video_size
+        
+        self.__window_size : Tuple[int, int] | None
+        if args.window_size is None:
+            self.__window_size = None
+        else:
+            if 'x' not in args.window_size:
+                raise ValueError('The window size must be of the form "1920x1080"')
+            
+            width_str, height_str = args.window_size.split('x')
+            self.__window_size = (int(width_str), int(height_str))
 
     def __determine_start_time(self, date: datetime) -> datetime:
         if date.hour==0 and date.minute==0 and date.second==0 and self.planet=='Earth':
@@ -145,14 +156,21 @@ class Parameters:
 
 
     @property
-    def size(self) -> str:
-        return self.__size
+    def video_size(self) -> str:
+        return self.__video_size
+
+
+    @property
+    def window_size(self) -> Tuple[int, int] | None:
+        return self.__window_size
+
 
 class StellariumToVideo:
     def __init__(self, param : Parameters) -> None:
         tempPath : Path = Path(tempfile.gettempdir()) / 'kalstar_frames'
         self.__frame_folder = tempPath
         self.__final_file = self.__frame_folder / 'final.png'
+        self.__first_file = self.__frame_folder / 'first.png'
         self.__param = param
 
         # Create frame folder if it not already exists
@@ -192,9 +210,19 @@ class StellariumToVideo:
     def create_frames(self) -> None:
         proc_stellarium = subprocess.Popen(['stellarium', '--startup-script', 'stellarium_to_video.ssc', '--screenshot-dir', str(self.__frame_folder)], stdout=subprocess.PIPE);
 
-        # wait for script finish
         s = 0
         timeout = 600
+
+        if (self.__param.window_size is not None):
+            # wait for first file
+            while not os.path.exists(self.__first_file) and s < timeout:
+                time.sleep(1)
+                s = s + 1
+
+            self.__resize_stellarium_window(self.__param.window_size)
+        
+        # wait for script finish
+        s = 0
         while not os.path.exists(self.__final_file) and s < timeout:
             time.sleep(1)
             s = s + 1
@@ -208,9 +236,7 @@ class StellariumToVideo:
                         '-r', str(self.__param.fps),
                         '-f', 'image2',
                         '-i', f'{self.__frame_folder}/frame_%03d.png',
-#                        '-s', '1920x1080',
-#                        '-s', '960x540',                        
-                        '-s', self.__param.size,
+                        '-s', self.__param.video_size,
                         '-crf', '12',   # niedriger ist besser
                         '-pix_fmt', 'yuv420p',
                         self.__param.outfile], stdout=subprocess.PIPE)
@@ -219,6 +245,83 @@ class StellariumToVideo:
         if (self.__param.show_video):
             proc = subprocess.Popen(['vlc', '--repeat', self.__param.outfile], stdout=subprocess.PIPE)
             proc.communicate()
+
+    def __resize_stellarium_window_win(self, width : int, height : int):
+        import pygetwindow as gw
+
+        pattern = re.compile(r"Stellarium \d+\.\d+(\.\d+)?")
+        all_windows = gw.getAllWindows()
+        
+        stellarium_window = None
+        for window in all_windows:
+            if pattern.match(window.title):
+                stellarium_window = window
+                break
+
+        if not stellarium_window:
+            print("Stellarium window not found.")
+            return
+    
+        stellarium_window.resizeTo(1080, 1920)
+        stellarium_window.moveTo(0, 0)  # Move the window to the top-left corner. Adjust as needed.
+
+
+    def __resize_stellarium_window_x11(self, width : int, height : int):
+        from Xlib import X, display
+        from Xlib.ext.xtest import fake_input
+        import Xlib.XK
+        import re
+        from ewmh import EWMH
+
+        ewmh = EWMH()
+        windows = ewmh.getClientList()
+        for win in windows:
+            title = ewmh.getWmName(win)
+            if isinstance(title, bytes):
+                title = title.decode('utf-8', 'replace')#
+
+            pattern = r'^Stellarium \d+\.\d+(\.\d+)?$'
+            if bool(re.match(pattern, title)):
+                ewmh.setWmState(win, 0, '_NET_WM_STATE_FULLSCREEN')
+
+                # setting width/size her is pointless. The window manager will clip it to the screen dimensions.
+                # This window will not have the proper size when the size is larger than the screen.
+                ewmh.setMoveResizeWindow(win, x=0, y=0, w=width, h=height, gravity=0)            
+                ewmh.display.flush() 
+
+                # Send Alt+F8 to the window
+                d = display.Display()
+                fake_input(d, X.KeyPress, d.keysym_to_keycode(Xlib.XK.string_to_keysym("Alt_L")))
+                fake_input(d, X.KeyPress, d.keysym_to_keycode(Xlib.XK.string_to_keysym("F8")))
+                fake_input(d, X.KeyRelease, d.keysym_to_keycode(Xlib.XK.string_to_keysym("F8")))
+                fake_input(d, X.KeyRelease, d.keysym_to_keycode(Xlib.XK.string_to_keysym("Alt_L")))
+
+                # Send four "Cursor Up" key presses
+                for _ in range(4):
+                    fake_input(d, X.KeyPress, d.keysym_to_keycode(Xlib.XK.string_to_keysym("Up")))
+                    fake_input(d, X.KeyRelease, d.keysym_to_keycode(Xlib.XK.string_to_keysym("Up")))
+
+                # Send "Enter" key press
+                fake_input(d, X.KeyPress, d.keysym_to_keycode(Xlib.XK.string_to_keysym("Return")))        
+                fake_input(d, X.KeyRelease, d.keysym_to_keycode(Xlib.XK.string_to_keysym("Return")))
+                d.sync()
+
+                # now move the window up so that its upper left corner is outside the screen. 
+                ewmh.setMoveResizeWindow(win, x=0, y=0, w=width, h=height, gravity=0)            
+                ewmh.display.flush()  # Apply changes
+
+            print(title)
+
+
+    def __resize_stellarium_window(self, size : Tuple[int, int]):
+        width, height = size
+
+        if os.name == 'posix':
+            self.__resize_stellarium_window_x11(width, height)
+        elif os.name == 'nt':
+            self.__resize_stellarium_window_win(width, height)
+        else:
+            raise NotImplementedError("This OS is not supported")            
 
 
 def arg_to_start_date(s) -> datetime:
@@ -288,7 +391,7 @@ def arg_to_size(s : str) -> str:
         raise argparse.ArgumentTypeError('Size parameter must be of the form "1920x1080"')
 
 
-def check_prerequisites() -> str:
+def check_prerequisites() -> Path:
     print(f'Checking prerequisites:')
     stellarium_path : str | None = shutil.which('stellarium')
     if stellarium_path is None:
@@ -320,7 +423,7 @@ def check_prerequisites() -> str:
         raise Exception(f'Cannot find the Stellarium user data path ({stellarium_data_path.absolute()}). Is Stellarium properly installed?')
 
     # If there is no local scripts folder, create one
-    script_folder = stellarium_data_path / 'scripts'
+    script_folder : Path = stellarium_data_path / 'scripts'
     if not os.path.isdir(script_folder.absolute()):
         print('\033[93m' + 'Warning: Local script folder does not exist. I\'m creating it for you.' + '\033[0m')
         os.mkdir(script_folder.absolute())
@@ -345,7 +448,8 @@ def main() -> None:
     parser.add_argument("-t", "--Template", dest="template", help='The template script. This must be the name of a ssc script in the script folder)', required=False, default='default.ssc', type=str)    
     parser.add_argument("-ts", "--TimeSpan",dest="timespan", help='Total time span covered by the simulation as ISO 8601 duration (default="PT2H" -> 2 hours)', default='PT2H', type=arg_to_iso_8661_duration)
     parser.add_argument("-v", "--View", dest="view", help='Defines the view Altitude, Azimuth, Field of View', default="180,35.0,70.0", type=arg_to_vec3)
-    parser.add_argument("-sz", "--Size", dest="size", help='The size of the output video. Example: "1920x1080"', default="1920x1080", required=False, type=arg_to_size)
+    parser.add_argument("-sz", "--VideoSize", dest="video_size", help='The size of the output video. Example: "1920x1080"', default="1920x1080", required=False, type=arg_to_size)
+    parser.add_argument("-wsz", "--WindowSize", dest="window_size", help='The size of the stellarium window. Example: "1080x1920" for portrait mode', default=None, required=False, type=arg_to_size)    
 
     param = Parameters(parser.parse_args())
 
@@ -357,7 +461,7 @@ def main() -> None:
     print('##############################################################')
     print('')  
     
-    script_folder : str = check_prerequisites()
+    script_folder : Path = check_prerequisites()
 
     print(f'Location:')
     print(f'  - lon={param.lon}, lat={param.lat}, address="{param.city}"')
@@ -369,6 +473,8 @@ def main() -> None:
     print(f'  - alt={param.alt}°, az={param.az}°, fov={param.fov}°')
     print(f'Video:')
     print(f'  - caption="{param.caption}"')
+    print(f'  - resolution="{param.video_size}"')
+    print(f'  - window_size={param.window_size}')
     print(f'  - file="{param.outfile}"')
     print('')
 
@@ -382,7 +488,7 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    try:
+#    try:
         main()
-    except Exception as e:
-        print('\033[91m' + f'Error: {e}' + '\033[0m')
+#    except Exception as e:
+#        print('\033[91m' + f'Error: {e}' + '\033[0m')

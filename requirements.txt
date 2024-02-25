@@ -1,4 +1,6 @@
-skyfield==1.48
-argparse==1.4.0
-geopy==2.4.1
-isodate==0.6.1
+skyfield>=1.48
+argparse>=1.4.0
+geopy>=2.4.1
+isodate>=0.6.1
+PyGetWindow>=0.0.9
+ewmh>=0.1.6

@@ -17,6 +17,8 @@
     
     function makeVideo(date, file_prefix, caption, hours, long, lat, alt, azi)
     {
+        core.screenshot("first", invert=false, dir=param_frame_folder, overwrite=true);
+
         core.setDate(date, "utc");
         core.setObserverLocation(long, lat, 425, 1, "Freiberg", param_planet);
         core.wait(0.5);
