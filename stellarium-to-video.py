@@ -10,7 +10,6 @@ import re
 import os
 import os.path
 
-from ewmh import EWMH
 from datetime import datetime, date, timezone
 from pathlib import Path
 from geopy.geocoders import Nominatim
@@ -247,6 +246,25 @@ class StellariumToVideo:
             proc = subprocess.Popen(['vlc', '--repeat', self.__param.outfile], stdout=subprocess.PIPE)
             proc.communicate()
 
+    def __resize_stellarium_window_win(self, width : int, height : int):
+        import pygetwindow as gw
+
+        pattern = re.compile(r"Stellarium \d+\.\d+(\.\d+)?")
+        all_windows = gw.getAllWindows()
+        
+        stellarium_window = None
+        for window in all_windows:
+            if pattern.match(window.title):
+                stellarium_window = window
+                break
+
+        if not stellarium_window:
+            print("Stellarium window not found.")
+            return
+    
+        stellarium_window.resizeTo(1080, 1920)
+        stellarium_window.moveTo(0, 0)  # Move the window to the top-left corner. Adjust as needed.
+
 
     def __resize_stellarium_window_x11(self, width : int, height : int):
         from Xlib import X, display
@@ -300,6 +318,8 @@ class StellariumToVideo:
 
         if os.name == 'posix':
             self.__resize_stellarium_window_x11(width, height)
+        elif os.name == 'nt':
+            self.__resize_stellarium_window_win(width, height)
         else:
             raise NotImplementedError("This OS is not supported")            
 
