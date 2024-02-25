@@ -59,7 +59,8 @@ python3 stellarium-to-video.py -v180,30,70 -l Freiberg -c "Dance of Planets" -d1
 
 https://github.com/beltoforion/stellarium-to-video/assets/2202567/2faa0861-ecc2-484a-9a12-082c51b60166
 
-You can also create videos in portait mode. However that only works it you are using Linux and the GNOME window manager.
+You can also create videos in portait mode by using the -wsz option to set a specific window size for the stellarium client window. This window size can also be greater than 
+the screen size. Using this option only works it you are using either Windows or Linux in combination with the GNOME window manager.
 
 ```python
 python3 stellarium-to-video.py -v180,30,70 -l Freiberg -c "Dance of Planets" -d1961-10-08T12:00:00+01:00 -ts P6M -s -o "dance.mp4" -dt P1D -tplanet_track.ssc -sz1080x1920 -wsz1080x1920
