@@ -19,6 +19,7 @@ import time
 import tempfile
 import shutil
 
+version = "2.0.1"
 
 class Parameters:
     def __init__(self, args : argparse.Namespace) -> None:
@@ -391,7 +392,7 @@ def arg_to_size(s : str) -> str:
         raise argparse.ArgumentTypeError('Size parameter must be of the form "1920x1080"')
 
 
-def check_prerequisites() -> Path:
+def check_prerequisites(param : Parameters) -> Path:
     print(f'Checking prerequisites:')
     stellarium_path : str | None = shutil.which('stellarium')
     if stellarium_path is None:
@@ -405,11 +406,12 @@ def check_prerequisites() -> Path:
     else:
         print(f'  - ffmpeg found at "{ffmpeg_path}"')
 
-    vlc_path : str | None = shutil.which('vlc')
-    if vlc_path is None:
-        raise Exception('VLC not found! This script requires VLC to be installed and available in the system path!')
-    else:
-        print(f'  - Vlc found at "{vlc_path}"')
+    if param.show_video:
+        vlc_path : str | None = shutil.which('vlc')
+        if vlc_path is None:
+            raise Exception('VLC not found! This script requires VLC to be installed and available in the system path!')
+        else:   
+            print(f'  - Vlc found at "{vlc_path}"')
 
     # check stellarium user data path
     stellarium_data_path : Path
@@ -444,7 +446,7 @@ def main() -> None:
     parser.add_argument("-l", "--Location", dest="loc", help='Location of the observer', default="13.9,50.9", required=True, type=arg_to_location)
     parser.add_argument("-o", "--Outfile", dest="outfile", help='Output filename', default='out.mp4')
     parser.add_argument("-p", "--Planet", dest="planet", help='The planet you are on.', default='Earth', type=str)
-    parser.add_argument("-s", "--Show", dest="show_video", default=True, action='store_true', help='If this flag is set the video is shown after rendering (VLC must be installed)')
+    parser.add_argument("-s", "--Show", dest="show_video", default=False, action='store_true', help='If this flag is set the video is shown after rendering (VLC must be installed)')
     parser.add_argument("-t", "--Template", dest="template", help='The template script. This must be the name of a ssc script in the script folder)', required=False, default='default.ssc', type=str)    
     parser.add_argument("-ts", "--TimeSpan",dest="timespan", help='Total time span covered by the simulation as ISO 8601 duration (default="PT2H" -> 2 hours)', default='PT2H', type=arg_to_iso_8661_duration)
     parser.add_argument("-v", "--View", dest="view", help='Defines the view Altitude, Azimuth, Field of View', default="180,35.0,70.0", type=arg_to_vec3)
@@ -454,14 +456,15 @@ def main() -> None:
     param = Parameters(parser.parse_args())
 
     print('')
-    print('##############################################################')
-    print('#                                                            #')
-    print('#  Stellarium-To-Video - Generating videos of the night sky  #')
-    print('#                                                            #')    
-    print('##############################################################')
+    print( '##############################################################')
+    print( '#                                                            #')
+    print( '#  Stellarium-To-Video - Generating videos of the night sky  #')
+    print(f'#  (C) 2024 Ingo Berg; Version {version}                         #')    
+    print( '#                                                            #')
+    print( '##############################################################')
     print('')  
     
-    script_folder : Path = check_prerequisites()
+    script_folder : Path = check_prerequisites(param)
 
     print(f'Location:')
     print(f'  - lon={param.lon}, lat={param.lat}, address="{param.city}"')
@@ -476,6 +479,7 @@ def main() -> None:
     print(f'  - resolution="{param.video_size}"')
     print(f'  - window_size={param.window_size}')
     print(f'  - file="{param.outfile}"')
+    print(f'  - show_video={param.show_video}')
     print('')
 
     if param.start_at_sunset:
