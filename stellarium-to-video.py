@@ -155,7 +155,11 @@ class Parameters:
     def template(self) -> str:
         return self.__template  
 
-
+    @property
+    def template_file(self) -> Path:
+        tempate_folder : Path = Path(os.path.dirname(os.path.realpath(__file__)))
+        return tempate_folder / 'script' / self.__template
+    
     @property
     def video_size(self) -> str:
         return self.__video_size
@@ -182,7 +186,7 @@ class StellariumToVideo:
 
 
     def create_script(self, script_path : Path) -> None:
-        with open(f'./script/{self.__param.template}', 'r') as file:
+        with open(self.__param.template_file, 'r') as file:
             script = file.read()
 
         if os.name == 'nt':
@@ -232,6 +236,12 @@ class StellariumToVideo:
 
 
     def create_video(self) -> None:
+        print("")
+        print("### Creating Video ################################################################")
+        print("")
+
+        print(f"ffmpeg -y -r {str(self.__param.fps)} -f image2 -i f'{self.__frame_folder}/frame_%03d.png' -s {self.__param.video_size} -crf 12 -pix_fmt yuv420p")
+
         proc = subprocess.Popen(['ffmpeg',
                         '-y', # overwrite existing file
                         '-r', str(self.__param.fps),
@@ -241,11 +251,13 @@ class StellariumToVideo:
                         '-crf', '12',   # niedriger ist besser
                         '-pix_fmt', 'yuv420p',
                         self.__param.outfile], stdout=subprocess.PIPE)
+
         proc.communicate()
 
         if (self.__param.show_video):
             proc = subprocess.Popen(['vlc', '--repeat', self.__param.outfile], stdout=subprocess.PIPE)
             proc.communicate()
+
 
     def __resize_stellarium_window_win(self, width : int, height : int):
         import pygetwindow as gw
@@ -310,8 +322,6 @@ class StellariumToVideo:
                 # now move the window up so that its upper left corner is outside the screen. 
                 ewmh.setMoveResizeWindow(win, x=0, y=0, w=width, h=height, gravity=0)            
                 ewmh.display.flush()  # Apply changes
-
-            print(title)
 
 
     def __resize_stellarium_window(self, size : Tuple[int, int]):
@@ -434,6 +444,9 @@ def check_prerequisites(param : Parameters) -> Path:
     if not os.path.isdir(script_folder.absolute()):
         raise Exception(f'The folder for stellarium user scripts cannot be found and an attempt to create it failed! ({script_folder})')
     
+    if not param.template_file.exists():
+        raise Exception(f'The template script "{param.template_file}" does not exist in the script folder "{script_folder}"')
+    
     return script_folder
 
 
@@ -466,18 +479,22 @@ def main() -> None:
     
     script_folder : Path = check_prerequisites(param)
 
+    print('')  
     print(f'Location:')
     print(f'  - lon={param.lon}, lat={param.lat}, address="{param.city}"')
     print(f'  - planet="{param.planet}"')
     print(f'  - template="{param.template}"')    
-    print(f'Time:')
+    print('')  
+    print(f'Stellarium Settings:')
     print(f'  - start={param.start_date.isoformat()}, timespan={param.timespan} s, delta_t={param.delta_t} s')
-    print(f'View:')
     print(f'  - alt={param.alt}°, az={param.az}°, fov={param.fov}°')
+    print(f'  - template_file="{param.template_file}"')
+    print('')  
     print(f'Video:')
     print(f'  - caption="{param.caption}"')
     print(f'  - resolution="{param.video_size}"')
     print(f'  - window_size={param.window_size}')
+    print(f'  - fps={param.fps}')
     print(f'  - file="{param.outfile}"')
     print(f'  - show_video={param.show_video}')
     print('')
