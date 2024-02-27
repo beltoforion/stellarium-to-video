@@ -13,6 +13,15 @@ In order to use this script [Stellarium](https://stellarium.org), [ffmpeg](https
 make sure that the location of their executables is in the global search path! This is automatically the case when you are on Linux on Windows however you have to manually add the
 corresponding folders to the PATH environment variable.
 
+# Download and Installation
+
+```bash
+git clone https://github.com/beltoforion/stellarium-to-video.git
+cd stellarium-to-video
+pip install -r requirements.txt
+python3 stellarium-to-video.py -l Boston
+```
+
 # Command Line Options:
 
 | Parameter | Parameter Type | Description |
